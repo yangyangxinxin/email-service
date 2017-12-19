@@ -14,7 +14,7 @@
         <constructor-arg name="host" value="${spring.mail.host}"/>
         <constructor-arg name="port" value="${spring.mail.port}"/>
         <constructor-arg name="protocol" value="${spring.mail.protocol}"/>
-        <constructor-arg name="debug" value="${spring.email.debug}"/>
+        <constructor-arg name="debug" value="${spring.mail.debug}"/>
     </bean>
 
     <bean class="com.luckysweetheart.email.sender.EmailSender" id="emailSender">
@@ -22,7 +22,7 @@
     </bean>
 
     <bean id="freeMarker" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-        <property name="templateLoaderPath" value="classpath:/META-INF/template/"/><!--指定模板文件目录-->
+        <property name="templateLoaderPath" value="${spring.mail.template.path}"/><!--指定模板文件目录-->
         <property name="freemarkerSettings"><!-- 设置FreeMarker环境属性-->
             <props>
                 <prop key="template_update_delay">1800</prop><!--刷新模板的周期，单位为秒-->

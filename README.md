@@ -12,12 +12,13 @@ spring.mail.password=your password
 spring.mail.host=your host
 spring.mail.port=your port
 spring.mail.protocol=your protocol
-spring.email.debug=true
+spring.mail.debug=true
+spring.mail.template.path=classpath:/META-INF/template/
 ```
 > spring-context.xml:
 
 ```xml
-
+<beans>
     <!--springUtil-->
     <bean id="springUtil" class="com.luckysweetheart.email.util.SpringUtil"/>
     
@@ -31,7 +32,7 @@ spring.email.debug=true
         <constructor-arg name="host" value="${spring.mail.host}"/>
         <constructor-arg name="port" value="${spring.mail.port}"/>
         <constructor-arg name="protocol" value="${spring.mail.protocol}"/>
-        <constructor-arg name="debug" value="${spring.email.debug}"/>
+        <constructor-arg name="debug" value="${spring.mail.debug}"/>
     </bean>
 
     <!--发送邮件配置-->
@@ -41,7 +42,7 @@ spring.email.debug=true
 
     <!--freemarker模板配置-->
     <bean id="freeMarker" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-        <property name="templateLoaderPath" value="classpath:/META-INF/template/"/><!--指定模板文件目录-->
+        <property name="templateLoaderPath" value="${spring.mail.template.path}"/><!--指定模板文件目录-->
         <property name="freemarkerSettings"><!-- 设置FreeMarker环境属性-->
             <props>
                 <prop key="template_update_delay">1800</prop><!--刷新模板的周期，单位为秒-->
@@ -50,12 +51,13 @@ spring.email.debug=true
             </props>
         </property>
     </bean>
-
+</beans>
 ```
 
 > 发送邮件：
 
 ```java
+public class App{
     public static void main(String[] args) throws MessagingException {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:/META-INF/spring/spring-context.xml");
         EmailClient client = applicationContext.getBean(EmailClient.class);
@@ -77,6 +79,7 @@ spring.email.debug=true
         EmailMessageData emailMessageData = EmailMessageData.create().content(content).subject("subject4").to("981987024@qq.com").attach("C:\\Users\\Developer5\\Desktop\\LuckDraw\\images\\bg.png");
         sender.sendEmailTemplate(emailMessageData);
     }
+}
 ```
 
 
