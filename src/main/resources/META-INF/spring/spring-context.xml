@@ -17,7 +17,11 @@
         <constructor-arg name="debug" value="${spring.mail.debug}"/>
     </bean>
 
-    <bean class="com.luckysweetheart.email.sender.EmailSender" id="emailSender">
+    <bean id="freemarkerTemplateParser" class="com.luckysweetheart.email.parser.executor.FreemarkerTemplateParser">
+
+    </bean>
+
+    <bean class="com.luckysweetheart.email.sender.EmailSenderExecutor" id="emailSenderExecutor">
         <property name="emailClient" ref="emailClient"/>
     </bean>
 

@@ -1,6 +1,6 @@
 # email-service
 --- 
-> 封装java发送邮件，简化开发流程。支持freemarker模板邮件、邮件附件支持。
+> 封装java发送邮件，简化开发流程。支持freemarker、velocity、markdown，支持附件。可以自己定义邮件模板类型。只需要实现`com.luckysweetheart.email.template.Template`接口`，你需要做的就是实现你的模板解析方法。
 
 ## start
 
@@ -35,11 +35,16 @@ spring.mail.template.path=classpath:/META-INF/template/
         <constructor-arg name="debug" value="${spring.mail.debug}"/>
     </bean>
 
-    <!--发送邮件配置-->
-    <bean class="com.luckysweetheart.email.sender.EmailSender" id="emailSender">
+    <!--freemarker解析器-->
+    <bean id="freemarkerTemplateParser" class="com.luckysweetheart.email.parser.executor.FreemarkerTemplateParser">
+    
+    </bean>
+    
+    <!--邮件发送执行者-->
+    <bean class="com.luckysweetheart.email.sender.EmailSenderExecutor" id="emailSenderExecutor">
         <property name="emailClient" ref="emailClient"/>
     </bean>
-
+    
     <!--freemarker模板配置-->
     <bean id="freeMarker" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
         <property name="templateLoaderPath" value="${spring.mail.template.path}"/><!--指定模板文件目录-->
@@ -72,12 +77,30 @@ public class App{
         map.put("a","yangxin");
         map.put("b","liujunyu");
 
+        // freemarker 模板
         // 配置文件中 已配置了模板文件的路径，相当于classpath:/META-INF/template/test.ftl
-        String content = FreeMarkerParseUtil.parse("test.ftl",map);
-
-        // 设置邮件内容及附件。
-        EmailMessageData emailMessageData = EmailMessageData.create().content(content).subject("subject4").to("981987024@qq.com").attach("C:\\Users\\Developer5\\Desktop\\LuckDraw\\images\\bg.png");
-        sender.sendEmailTemplate(emailMessageData);
+        EmailTemplateMessage emailMessageData = EmailTemplateMessage.create().template(new FreemarkerTemplate(Demo.TEST.getPath(),map)).subject("subject4").to("981987024@qq.com").attach("C:\\Users\\Developer5\\Desktop\\LuckDraw\\images\\bg.png");
+        sender.send(emailMessageData);
+        
+        // velocity 模板
+        EmailTemplateMessage emailMessageData = EmailTemplateMessage.create().template(new VelocityTemplate(Demo.VELOCITY.getPath(),map)).subject("subject4").to("981987024@qq.com").attach("C:\\Users\\Developer5\\Desktop\\LuckDraw\\images\\bg.png");
+        sender.send(emailMessageData);
+        
+        // markdown 文件        
+        MarkDownMessage message = new MarkDownMessage();
+        message.setPath("E:\\study\\code\\email-service\\Test.md");
+        message.setSubject("test markdown");
+        List<String> to = new ArrayList<>();
+        to.add("981987024@qq.com");
+        message.setTo(to);
+        sender.send(message);
+        
+        // 纯文本内容发送
+        TextMessage textMessage = new TextMessage();
+        textMessage.setContent("aaaaaaa");
+        textMessage.setSubject("测试纯文本内容");
+        textMessage.setTo(to);
+        sender.send(textMessage);
     }
 }
 ```

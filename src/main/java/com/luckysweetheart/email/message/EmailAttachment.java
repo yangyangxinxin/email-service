@@ -1,4 +1,4 @@
-package com.luckysweetheart.email.data;
+package com.luckysweetheart.email.message;
 
 import org.apache.commons.io.IOUtils;
 
@@ -7,13 +7,12 @@ import javax.mail.util.ByteArrayDataSource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 
 /**
  * 邮件附件
  * Created by yangxin on 2017/12/18.
  */
-public class EmailAttachment implements Serializable {
+public class EmailAttachment {
 
     /**
      * 附件名

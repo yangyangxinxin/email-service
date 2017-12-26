@@ -1,24 +1,26 @@
-package com.luckysweetheart.email.data;
+package com.luckysweetheart.email.message.template;
 
+import com.luckysweetheart.email.message.EmailAttachment;
+import com.luckysweetheart.email.message.EmailMessage;
+import com.luckysweetheart.email.template.Template;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * 邮件消息
+ * 模板邮件消息
  * Created by yangxin on 2017/12/18.
  */
-public class EmailMessageData implements Serializable {
+public class EmailTemplateMessage implements EmailMessage {
 
     /**
-     * 邮件内容
+     * 模板
      */
-    private String content;
+    private Template template;
 
     /**
      * 主题
@@ -35,25 +37,25 @@ public class EmailMessageData implements Serializable {
      */
     private List<EmailAttachment> emailAttachments;
 
-    private EmailMessageData() {
+    private EmailTemplateMessage() {
 
     }
 
-    public static EmailMessageData create() {
-        return new EmailMessageData();
+    public static EmailTemplateMessage create() {
+        return new EmailTemplateMessage();
     }
 
-    public EmailMessageData content(String content) {
-        this.content = content;
+    public EmailTemplateMessage template(Template template) {
+        this.template = template;
         return this;
     }
 
-    public EmailMessageData subject(String subject) {
+    public EmailTemplateMessage subject(String subject) {
         this.subject = subject;
         return this;
     }
 
-    public EmailMessageData to(List<String> to) {
+    public EmailTemplateMessage to(List<String> to) {
         if (this.to == null) {
             this.to = new ArrayList<String>();
         }
@@ -61,7 +63,7 @@ public class EmailMessageData implements Serializable {
         return this;
     }
 
-    public EmailMessageData to(String... to) {
+    public EmailTemplateMessage to(String... to) {
         if (this.to == null) {
             this.to = new ArrayList<String>();
         }
@@ -72,7 +74,7 @@ public class EmailMessageData implements Serializable {
         return this;
     }
 
-    public EmailMessageData to(String to, String separator) {
+    public EmailTemplateMessage to(String to, String separator) {
         if (StringUtils.isNotBlank(to)) {
             String[] strings = StringUtils.split(to, separator);
             return to(strings);
@@ -80,7 +82,7 @@ public class EmailMessageData implements Serializable {
         return this;
     }
 
-    public EmailMessageData attach(EmailAttachment... emailAttachments) {
+    public EmailTemplateMessage attach(EmailAttachment... emailAttachments) {
         if (this.emailAttachments == null) {
             this.emailAttachments = new ArrayList<EmailAttachment>();
         }
@@ -90,7 +92,7 @@ public class EmailMessageData implements Serializable {
         return this;
     }
 
-    public EmailMessageData attach(byte[] contents, String name) {
+    public EmailTemplateMessage attach(byte[] contents, String name) {
         if (this.emailAttachments == null) {
             this.emailAttachments = new ArrayList<EmailAttachment>();
         }
@@ -108,7 +110,7 @@ public class EmailMessageData implements Serializable {
         System.out.println(file.getName());
     }
 
-    public EmailMessageData attach(File... files) {
+    public EmailTemplateMessage attach(File... files) {
         try {
             if (files != null && files.length > 0) {
                 for (File file : files) {
@@ -121,7 +123,7 @@ public class EmailMessageData implements Serializable {
         return this;
     }
 
-    public EmailMessageData attach(String... path) {
+    public EmailTemplateMessage attach(String... path) {
         if (path != null && path.length > 0) {
             for (String s : path) {
                 attach(new File(s));
@@ -158,7 +160,7 @@ public class EmailMessageData implements Serializable {
     }
 
     public String getContent() {
-        return content;
+        return template.getParser().parse(template);
     }
 
     public String getSubject() {
