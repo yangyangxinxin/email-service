@@ -1,50 +1,29 @@
 package com.luckysweetheart.email.message.text;
 
-import com.luckysweetheart.email.message.EmailAttachment;
 import com.luckysweetheart.email.message.EmailMessage;
 import com.luckysweetheart.email.parser.executor.TextOnlyParser;
 
-import java.util.List;
-
 /**
+ * 纯文本邮件消息
  * Created by yangxin on 2017/12/26.
  */
-public class TextMessage implements EmailMessage {
+public class TextMessage extends EmailMessage {
 
     /**
      * 文本内容
      */
     private String content;
 
-    /**
-     * 收件人
-     */
-    private List<String> to;
+    private TextMessage(){
+    }
 
-    /**
-     * 主题
-     */
-    private String subject;
+    public static TextMessage create() {
+        return new TextMessage();
+    }
 
-    /**
-     * 附件
-     */
-    private List<EmailAttachment> emailAttachments;
-
-    public void setContent(String content) {
+    public TextMessage content(String content) {
         this.content = content;
-    }
-
-    public void setTo(List<String> to) {
-        this.to = to;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public void setEmailAttachments(List<EmailAttachment> emailAttachments) {
-        this.emailAttachments = emailAttachments;
+        return this;
     }
 
     @Override
@@ -52,18 +31,4 @@ public class TextMessage implements EmailMessage {
         return new TextOnlyParser().parse(this.content);
     }
 
-    @Override
-    public List<String> getTo() {
-        return this.to;
-    }
-
-    @Override
-    public String getSubject() {
-        return this.subject;
-    }
-
-    @Override
-    public List<EmailAttachment> getEmailAttachments() {
-        return this.emailAttachments;
-    }
 }

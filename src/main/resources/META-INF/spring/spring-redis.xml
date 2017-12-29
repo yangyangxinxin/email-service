@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:beans="http://www.springframework.org/schema/c"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+
+	<!--
+           ============jedisConnectionFactory===========
+           p:hostName 主机ip地址
+           p:port 端口号
+           p:password 密码,redis只有密码
+           p:poolConfig 联接池配置
+           p:timeout 超时时间，这个最好设置大点，初始时一般会超过2秒
+           p:use-pool 是否使用联接池
+         -->
+	<bean id="jedisConnectionFactory"
+		  class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+		  p:hostName="${redis.host}"
+		  p:port="${redis.port}"
+		  p:password="${redis.password}"
+		  p:poolConfig-ref="jredisPoolConfig"
+		  p:timeout="20000"
+		  p:use-pool="true"/>
+	<!-- 
+	  =============jredisPoolConfig配置说明============
+	  blockWhenExhausted 连接耗尽时是否阻塞, false报异常,ture阻塞直到超时, 默认true
+	  evictionPolicyClassName 设置的逐出策略类名, 默认DefaultEvictionPolicy(当连接超过最大空闲时间,或连接数超过最大空闲连接数)
+	  //p:fairness="true"
+	  jmxEnabled 是否启用pool的jmx管理功能, 默认true
+	  jmxNameBase
+	  jmxNamePrefix
+	  lifo 是否启用后进先出, 默认true
+	  maxIdle 最大空闲数  默认8个
+	  maxTotal 最大链接总数    默认8个
+	  maxWaitMillis 获取连接时的最大等待毫秒数,默认-1不确定时间
+	  minEvictableIdleTimeMillis 最大空闲逐出时间
+	  minIdle 最小空闲连接数, 默认0
+	  numTestsPerEvictionRun每次逐出检查时 逐出的最大数目 如果为负数就是 : 1/abs(n), 默认3
+	  softMinEvictableIdleTimeMillis对象空闲多久后逐出, 当空闲时间>该值 且 空闲连接>最大空闲数 时直接逐出,不再根据MinEvictableIdleTimeMillis判断  (默认逐出策略)
+	  testOnBorrow 在获取连接的时候检查有效性, 默认false
+	  testWhileIdle  
+	  testOnReturn
+	 -->
+	<bean id="jredisPoolConfig" class="redis.clients.jedis.JedisPoolConfig"
+		  p:blockWhenExhausted="true"
+		  p:evictionPolicyClassName="org.apache.commons.pool2.impl.DefaultEvictionPolicy"
+		  p:jmxEnabled="true"
+		  p:lifo="true"
+		  p:maxIdle="100"
+		  p:maxTotal="300"
+		  p:maxWaitMillis="5000"
+		  p:minEvictableIdleTimeMillis="120000"
+		  p:minIdle="0"
+		  p:numTestsPerEvictionRun="30"
+		  p:softMinEvictableIdleTimeMillis="120000"
+		  p:testOnBorrow="false"
+		  p:testWhileIdle="true"
+		  p:testOnReturn="true"
+	/>
+	<bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate"
+		  p:connection-factory-ref="jedisConnectionFactory" p:enableTransactionSupport="true"/>
+
+	<bean class="org.springframework.data.redis.listener.RedisMessageListenerContainer" >
+		<property name="connectionFactory" ref="jedisConnectionFactory"/>
+	</bean>
+
+	<bean class="org.springframework.data.redis.core.RedisTemplate">
+		<property name="connectionFactory" ref="jedisConnectionFactory"/>
+	</bean>
+
+
+</beans>

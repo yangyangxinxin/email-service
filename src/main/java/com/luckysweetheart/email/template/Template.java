@@ -12,18 +12,21 @@ public interface Template {
 
     /**
      * 模板路径
+     *
      * @return
      */
     String getPath();
 
     /**
      * 模板变量
+     *
      * @return
      */
-    Map<String,Object> getParameters();
+    Map<String, Object> getParameters();
 
     /**
      * 模板解析器
+     *
      * @return
      */
     TemplateParser getParser();

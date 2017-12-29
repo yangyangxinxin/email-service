@@ -49,37 +49,30 @@ public class EmailClient extends JavaMailSenderImpl {
         this.port = port;
         this.protocol = protocol;
         this.debug = debug;
-    }
 
-    public EmailClient(String username, String password, String host, int port) {
-        this.username = username;
-        this.password = password;
-        this.host = host;
-        this.port = port;
-        this.protocol = DEFAULT_PROTOCOL;
-        this.debug = false;
-    }
-
-    /**
-     * 初始化父类
-     */
-    public void init() {
         super.setDefaultEncoding("UTF-8");
         super.setHost(host);
         super.setPassword(password);
         super.setProtocol(protocol);
         super.setUsername(username);
         super.setPort(port);
+
         Properties props = new Properties();//②
         props.setProperty("mail.smtp.host", host);
         props.setProperty("mail.smtp.auth", "true");
+        final String pwd = this.password;
+        final String name = this.username;
         javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
+                return new PasswordAuthentication(name, pwd);
             }
         });
         super.setSession(session);
+    }
+
+    public EmailClient(String username, String password, String host, int port) {
+        this(username, password, host, port, DEFAULT_PROTOCOL, false);
     }
 
     @Override

@@ -1,50 +1,34 @@
 package com.luckysweetheart.email.message.text;
 
-import com.luckysweetheart.email.message.EmailAttachment;
 import com.luckysweetheart.email.message.EmailMessage;
 import com.luckysweetheart.email.parser.executor.MarkDownParser;
 
-import java.util.List;
-
 /**
+ * markdown 邮件消息
  * Created by yangxin on 2017/12/26.
  */
-public class MarkDownMessage implements EmailMessage {
+public class MarkDownMessage extends EmailMessage {
 
     /**
      * markdown 文件路径
      */
     private String path;
 
-    /**
-     * 收件人
-     */
-    private List<String> to;
+    private MarkDownMessage(){
 
-    /**
-     * 主题
-     */
-    private String subject;
+    }
 
-    /**
-     * 附件
-     */
-    private List<EmailAttachment> emailAttachments;
+    public static MarkDownMessage create(){
+        return new MarkDownMessage();
+    }
 
-    public void setPath(String path) {
+    public MarkDownMessage path(String path){
         this.path = path;
+        return this;
     }
 
-    public void setTo(List<String> to) {
-        this.to = to;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public void setEmailAttachments(List<EmailAttachment> emailAttachments) {
-        this.emailAttachments = emailAttachments;
+    public String getPath() {
+        return path;
     }
 
     @Override
@@ -52,18 +36,4 @@ public class MarkDownMessage implements EmailMessage {
         return new MarkDownParser().parse(this.path);
     }
 
-    @Override
-    public List<String> getTo() {
-        return this.to;
-    }
-
-    @Override
-    public String getSubject() {
-        return this.subject;
-    }
-
-    @Override
-    public List<EmailAttachment> getEmailAttachments() {
-        return this.emailAttachments;
-    }
 }

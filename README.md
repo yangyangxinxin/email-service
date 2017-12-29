@@ -1,6 +1,8 @@
 # email-service
 --- 
-> 封装java发送邮件，简化开发流程。支持freemarker、velocity、markdown，支持附件。可以自己定义邮件模板类型。只需要实现`com.luckysweetheart.email.template.Template`接口`，你需要做的就是实现你的模板解析方法。
+> 封装java发送邮件，简化开发流程。支持freemarker、velocity、markdown，支持附件。可以自己定义邮件模板类型。只需要实现`com.luckysweetheart.email.template.Template`接口，你需要做的就是实现你的模板解析方法。
+
+> 尽管支持这么多模板引擎，还是建议使用freemarker模板。之前看到有人做过测试，freemarker的效率比其他模板都要高。
 
 ## start
 
@@ -13,7 +15,8 @@ spring.mail.host=your host
 spring.mail.port=your port
 spring.mail.protocol=your protocol
 spring.mail.debug=true
-spring.mail.template.path=classpath:/META-INF/template/
+# 如果你用的不是freemarker 模板 这项就不要指定了。
+spring.mail.template.path=classpath:/META-INF/template/ 
 ```
 > spring-context.xml:
 
@@ -37,7 +40,7 @@ spring.mail.template.path=classpath:/META-INF/template/
 
     <!--freemarker解析器-->
     <bean id="freemarkerTemplateParser" class="com.luckysweetheart.email.parser.executor.FreemarkerTemplateParser">
-    
+        <property name="emailClient" ref="emailClient"/>
     </bean>
     
     <!--邮件发送执行者-->
@@ -55,6 +58,20 @@ spring.mail.template.path=classpath:/META-INF/template/
                 <prop key="locale">zh_CN</prop><!-- 本地化设置-->
             </props>
         </property>
+    </bean>
+    
+    <!--velocity配置-->
+    <bean class="org.apache.velocity.app.VelocityEngine" id="velocityEngine">
+        <constructor-arg name="p">
+            <props>
+                <prop key="resource.loader">classpath</prop>
+                <prop key="classpath.resource.loader.class">org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader</prop>
+            </props>
+        </constructor-arg>
+    </bean>
+
+    <bean id="velocityTemplateParser" class="com.luckysweetheart.email.parser.executor.VelocityTemplateParser">
+        <property name="velocityEngine" ref="velocityEngine"/>
     </bean>
 </beans>
 ```

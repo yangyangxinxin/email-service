@@ -20,11 +20,6 @@ public class EmailAttachment {
     private String name;
 
     /**
-     * 附件描述
-     */
-    private String description;
-
-    /**
      * 附件字节数组
      */
     private byte[] contents;
@@ -35,14 +30,6 @@ public class EmailAttachment {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public byte[] getContents() {

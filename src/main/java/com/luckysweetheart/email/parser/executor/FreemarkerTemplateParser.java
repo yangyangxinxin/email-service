@@ -12,14 +12,14 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import java.io.IOException;
 
 /**
- * Freemarker模板解析
+ * Freemarker模板解析器
  * Created by yangxin on 2017/12/26.
  */
 public class FreemarkerTemplateParser implements TemplateParser {
 
     private static final Logger logger = LoggerFactory.getLogger(FreemarkerTemplateParser.class);
 
-    private static FreeMarkerConfigurer freeMarkerConfigurer = SpringUtil.getBean(FreeMarkerConfigurer.class);
+    private FreeMarkerConfigurer freeMarkerConfigurer;
 
     @Override
     public String parse(Template template) {
@@ -31,5 +31,13 @@ public class FreemarkerTemplateParser implements TemplateParser {
             logger.error(e.getMessage(), e);
         }
         return html;
+    }
+
+    public FreeMarkerConfigurer getFreeMarkerConfigurer() {
+        return freeMarkerConfigurer;
+    }
+
+    public void setFreeMarkerConfigurer(FreeMarkerConfigurer freeMarkerConfigurer) {
+        this.freeMarkerConfigurer = freeMarkerConfigurer;
     }
 }

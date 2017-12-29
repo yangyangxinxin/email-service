@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <bean id="springUtil" class="com.luckysweetheart.email.util.SpringUtil"/>
 
     <context:property-placeholder location="classpath:/META-INF/config/app.properties" ignore-unresolvable="true"/>
 
-    <bean class="com.luckysweetheart.email.client.EmailClient" id="emailClient" init-method="init">
+    <bean class="com.luckysweetheart.email.client.EmailClient" id="emailClient">
         <constructor-arg name="username" value="${spring.mail.username}"/>
         <constructor-arg name="password" value="${spring.mail.password}"/>
         <constructor-arg name="host" value="${spring.mail.host}"/>
@@ -18,7 +19,7 @@
     </bean>
 
     <bean id="freemarkerTemplateParser" class="com.luckysweetheart.email.parser.executor.FreemarkerTemplateParser">
-
+        <property name="freeMarkerConfigurer" ref="freeMarker"/>
     </bean>
 
     <bean class="com.luckysweetheart.email.sender.EmailSenderExecutor" id="emailSenderExecutor">
@@ -35,4 +36,19 @@
             </props>
         </property>
     </bean>
+
+    <!--velocity配置-->
+    <bean class="org.apache.velocity.app.VelocityEngine" id="velocityEngine">
+        <constructor-arg name="p">
+            <props>
+                <prop key="resource.loader">classpath</prop>
+                <prop key="classpath.resource.loader.class">org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader</prop>
+            </props>
+        </constructor-arg>
+    </bean>
+
+    <bean id="velocityTemplateParser" class="com.luckysweetheart.email.parser.executor.VelocityTemplateParser">
+        <property name="velocityEngine" ref="velocityEngine"/>
+    </bean>
+
 </beans>

@@ -1,13 +1,12 @@
 package com.luckysweetheart.email.parser.executor;
 
-import com.luckysweetheart.email.template.Template;
 import com.luckysweetheart.email.parser.parsers.TemplateParser;
+import com.luckysweetheart.email.template.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import java.io.StringWriter;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * velocity模板解析器
@@ -15,14 +14,7 @@ import java.util.Properties;
  */
 public class VelocityTemplateParser implements TemplateParser {
 
-    private VelocityEngine velocityEngine = new VelocityEngine();
-
-    public VelocityTemplateParser(){
-        Properties p = new Properties();
-        p.put("resource.loader", "classpath");
-        p.put("classpath.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-        velocityEngine.init(p);
-    }
+    private VelocityEngine velocityEngine ;
 
     @Override
     public String parse(Template template) {
@@ -42,5 +34,13 @@ public class VelocityTemplateParser implements TemplateParser {
         t.merge(context, writer);
 
         return writer.toString();
+    }
+
+    public VelocityEngine getVelocityEngine() {
+        return velocityEngine;
+    }
+
+    public void setVelocityEngine(VelocityEngine velocityEngine) {
+        this.velocityEngine = velocityEngine;
     }
 }

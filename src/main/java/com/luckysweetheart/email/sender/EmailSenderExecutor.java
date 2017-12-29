@@ -1,6 +1,7 @@
 package com.luckysweetheart.email.sender;
 
 import com.luckysweetheart.email.client.EmailClient;
+import com.luckysweetheart.email.exception.EmailMessageException;
 import com.luckysweetheart.email.message.EmailAttachment;
 import com.luckysweetheart.email.message.EmailMessage;
 import com.luckysweetheart.email.util.DateUtil;
@@ -25,19 +26,18 @@ public class EmailSenderExecutor implements EmailSender {
     private EmailClient emailClient;
 
     @Override
-    public void send(EmailMessage emailMessageData) {
+    public void send(EmailMessage emailMessage) {
         long start = System.currentTimeMillis();
         logger.info("开始发送邮件");
         MimeMessage message = null;
         try {
-            isTrue(emailMessageData.getTo() != null && emailMessageData.getTo().size() > 0, "收件人不能为空");
-            notNull(emailMessageData.getSubject(), "邮件主题或标题不能为空");
+            emailMessage.validate();
 
             message = emailClient.createMimeMessage();
 
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            List<EmailAttachment> emailAttachments = emailMessageData.getEmailAttachments();
+            List<EmailAttachment> emailAttachments = emailMessage.getEmailAttachments();
             if (emailAttachments != null && emailAttachments.size() > 0) {
                 for (EmailAttachment emailAttachment : emailAttachments) {
                     helper.addAttachment(emailAttachment.getName(), emailAttachment.createDataSource());
@@ -45,19 +45,17 @@ public class EmailSenderExecutor implements EmailSender {
             }
 
             helper.setFrom(emailClient.getUsername());
-            String[] arr = new String[emailMessageData.getTo().size()];
-            for (int i = 0; i < emailMessageData.getTo().size(); i++) {
-                arr[i] = emailMessageData.getTo().get(i);
-            }
-            helper.setTo(arr);
-            helper.setSubject(emailMessageData.getSubject());
-            helper.setText(emailMessageData.getContent(), true);
+
+            helper.setTo(emailMessage.getToArray());
+            helper.setSubject(emailMessage.getSubject());
+            helper.setText(emailMessage.getContent(), true);
             emailClient.send(message);
 
             long end = System.currentTimeMillis();
             logger.info("邮件发送成功 ，耗时 {} s", (end - start) / 1000);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            throw new EmailMessageException(e.getMessage());
         }
     }
 

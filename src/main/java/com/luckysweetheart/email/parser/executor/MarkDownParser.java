@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * MarkDown 文本解析
+ * MarkDown 文本解析器
  * Created by yangxin on 2017/12/26.
  */
 public class MarkDownParser implements TextParser {
@@ -36,10 +36,5 @@ public class MarkDownParser implements TextParser {
             e.printStackTrace();
         }
         return null;
-    }
-
-
-    public static void main(String[] args) {
-
     }
 }
