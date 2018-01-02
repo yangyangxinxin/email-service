@@ -3,6 +3,7 @@ package com.luckysweetheart.email.message;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.lang.model.element.NestingKind;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,8 +21,21 @@ public abstract class EmailMessage implements Serializable {
 
     /**
      * 邮件收件人
+     * The "To" (primary) recipients.
      */
     protected List<String> to;
+
+    /**
+     * 抄送
+     * The "Cc" (carbon copy) recipients.
+     */
+    protected List<String> cc;
+
+    /**
+     * 密送
+     * The "Bcc" (blind carbon copy) recipients.
+     */
+    protected List<String> bcc;
 
     /**
      * 邮件主题
@@ -88,6 +102,34 @@ public abstract class EmailMessage implements Serializable {
         this.emailAttachments = emailAttachments;
     }
 
+    public List<String> getCc() {
+        return cc;
+    }
+
+    /**
+     * 推荐使用链式调用方法 {@link EmailMessage#cc(String...)}
+     *
+     * @param cc
+     */
+    @Deprecated
+    public void setCc(List<String> cc) {
+        this.cc = cc;
+    }
+
+    public List<String> getBcc() {
+        return bcc;
+    }
+
+    /**
+     * 推荐使用链式调用方法 {@link EmailMessage#bcc(String...)}
+     *
+     * @param bcc
+     */
+    @Deprecated
+    public void setBcc(List<String> bcc) {
+        this.bcc = bcc;
+    }
+
     /**
      * 邮件收件人
      *
@@ -137,6 +179,22 @@ public abstract class EmailMessage implements Serializable {
         return this;
     }
 
+    public EmailMessage cc(List<String> cc) {
+        if (this.cc == null) {
+            this.cc = new ArrayList<>();
+        }
+        this.cc.addAll(cc);
+        return this;
+    }
+
+    public EmailMessage bcc(List<String> bcc) {
+        if (this.bcc == null) {
+            this.bcc = new ArrayList<>();
+        }
+        this.bcc.addAll(bcc);
+        return this;
+    }
+
     /**
      * set receivers .
      *
@@ -150,6 +208,28 @@ public abstract class EmailMessage implements Serializable {
         if (to != null && to.length > 0) {
             List<String> strings = Arrays.asList(to);
             this.to.addAll(strings);
+        }
+        return this;
+    }
+
+    public EmailMessage cc(String... cc) {
+        if (this.cc == null) {
+            this.cc = new ArrayList<>();
+        }
+        if (cc != null && cc.length > 0) {
+            List<String> strings = Arrays.asList(cc);
+            this.cc.addAll(strings);
+        }
+        return this;
+    }
+
+    public EmailMessage bcc(String... bcc) {
+        if (this.bcc == null) {
+            this.bcc = new ArrayList<>();
+        }
+        if (bcc != null && bcc.length > 0) {
+            List<String> strings = Arrays.asList(bcc);
+            this.bcc.addAll(strings);
         }
         return this;
     }
@@ -176,6 +256,35 @@ public abstract class EmailMessage implements Serializable {
         }
         return this;
     }
+
+    public EmailMessage to(String to) {
+        return to(to, ",");
+    }
+
+    public EmailMessage cc(String cc, String separator) {
+        if (StringUtils.isNotBlank(cc)) {
+            String[] strings = StringUtils.split(cc, separator);
+            return cc(strings);
+        }
+        return this;
+    }
+
+    public EmailMessage cc(String cc) {
+        return cc(cc, ",");
+    }
+
+    public EmailMessage bcc(String bcc, String separator) {
+        if (StringUtils.isNotBlank(bcc)) {
+            String[] strings = StringUtils.split(bcc, separator);
+            return bcc(strings);
+        }
+        return this;
+    }
+
+    public EmailMessage bcc(String bcc) {
+        return bcc(bcc, ",");
+    }
+
 
     /**
      * add the email attachment with EmailAttachment Object
@@ -247,19 +356,14 @@ public abstract class EmailMessage implements Serializable {
         return this;
     }
 
-    /**
-     * return the all receivers as array.
-     *
-     * @return
-     */
-    public String[] getToArray() {
-        if (this.to == null || this.to.size() == 0) {
+    public String[] getArray(List<String> list) {
+        if (list == null || to.size() == 0) {
             return null;
         }
         try {
-            String[] arr = new String[this.to.size()];
-            for (int i = 0, length = this.to.size(); i < length; i++) {
-                arr[i] = this.to.get(i);
+            String[] arr = new String[list.size()];
+            for (int i = 0, length = list.size(); i < length; i++) {
+                arr[i] = list.get(i);
             }
             return arr;
         } catch (Exception e) {
@@ -268,20 +372,60 @@ public abstract class EmailMessage implements Serializable {
         }
     }
 
+    public String getListStr(List<String> list, String separator) {
+        if (list == null || list.size() == 0) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String aSendTo : list) {
+            sb.append(aSendTo).append(separator);
+        }
+        return sb.toString();
+    }
+
+    public String getListStr(List<String> list) {
+        if (list == null || list.size() == 0) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String aSendTo : list) {
+            sb.append(aSendTo).append(";");
+        }
+        return sb.toString();
+    }
+
+    /**
+     * return the all receivers as array.
+     *
+     * @return
+     */
+    public String[] getToArray() {
+        return getArray(this.to);
+    }
+
+    public String[] getCcArray() {
+        return getArray(this.cc);
+    }
+
+    public String[] getBccArray() {
+        return getArray(this.bcc);
+    }
+
     /**
      * return the all receivers , with separator
      *
      * @return the receivers with separator
      */
     public String getToStr(String separator) {
-        if (this.to == null || this.to.size() == 0) {
-            return null;
-        }
-        StringBuilder sb = new StringBuilder();
-        for (String aSendTo : this.to) {
-            sb.append(aSendTo).append(separator);
-        }
-        return sb.toString();
+        return getListStr(to, separator);
+    }
+
+    public String getCcStr(String separator) {
+        return getListStr(cc, separator);
+    }
+
+    public String getBccStr(String separator) {
+        return getListStr(bcc, separator);
     }
 
     /**
@@ -290,14 +434,15 @@ public abstract class EmailMessage implements Serializable {
      * @return the receivers with semicolon
      */
     public String getToStr() {
-        if (this.to == null || this.to.size() == 0) {
-            return null;
-        }
-        StringBuilder sb = new StringBuilder();
-        for (String aSendTo : this.to) {
-            sb.append(aSendTo).append(";");
-        }
-        return sb.toString();
+        return getListStr(to);
+    }
+
+    public String getCcStr() {
+        return getListStr(cc);
+    }
+
+    public String getBccStr() {
+        return getListStr(bcc);
     }
 
     /**

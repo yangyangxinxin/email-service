@@ -47,6 +47,8 @@ public class EmailSenderExecutor implements EmailSender {
             helper.setFrom(emailClient.getUsername());
 
             helper.setTo(emailMessage.getToArray());
+            helper.setCc(emailMessage.getCcArray());
+            helper.setBcc(emailMessage.getBccArray());
             helper.setSubject(emailMessage.getSubject());
             helper.setText(emailMessage.getContent(), true);
             emailClient.send(message);
