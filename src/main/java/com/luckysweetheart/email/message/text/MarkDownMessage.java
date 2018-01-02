@@ -10,9 +10,9 @@ import com.luckysweetheart.email.parser.executor.MarkDownParser;
 public class MarkDownMessage extends EmailMessage {
 
     /**
-     * markdown 文件路径
+     * markdown 文件内容
      */
-    private String path;
+    private String content;
 
     private MarkDownMessage(){
 
@@ -22,18 +22,14 @@ public class MarkDownMessage extends EmailMessage {
         return new MarkDownMessage();
     }
 
-    public MarkDownMessage path(String path){
-        this.path = path;
+    public MarkDownMessage content(String content){
+        this.content = content;
         return this;
-    }
-
-    public String getPath() {
-        return path;
     }
 
     @Override
     public String getContent() {
-        return new MarkDownParser().parse(this.path);
+        return new MarkDownParser().parse(this.content);
     }
 
 }

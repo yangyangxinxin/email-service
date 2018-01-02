@@ -31,4 +31,5 @@ public class TextMessage extends EmailMessage {
         return new TextOnlyParser().parse(this.content);
     }
 
+
 }

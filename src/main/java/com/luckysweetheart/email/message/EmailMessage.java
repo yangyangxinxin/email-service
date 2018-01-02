@@ -20,6 +20,11 @@ import static org.springframework.util.Assert.notNull;
 public abstract class EmailMessage implements Serializable {
 
     /**
+     * 默认分隔符
+     */
+    public static final String DEFAULT_SEPARATOR = ",";
+
+    /**
      * 邮件收件人
      * The "To" (primary) recipients.
      */
@@ -203,7 +208,7 @@ public abstract class EmailMessage implements Serializable {
      */
     public EmailMessage to(String... to) {
         if (this.to == null) {
-            this.to = new ArrayList<String>();
+            this.to = new ArrayList<>();
         }
         if (to != null && to.length > 0) {
             List<String> strings = Arrays.asList(to);
@@ -258,7 +263,7 @@ public abstract class EmailMessage implements Serializable {
     }
 
     public EmailMessage to(String to) {
-        return to(to, ",");
+        return to(to, DEFAULT_SEPARATOR);
     }
 
     public EmailMessage cc(String cc, String separator) {
@@ -389,7 +394,7 @@ public abstract class EmailMessage implements Serializable {
         }
         StringBuilder sb = new StringBuilder();
         for (String aSendTo : list) {
-            sb.append(aSendTo).append(";");
+            sb.append(aSendTo).append(DEFAULT_SEPARATOR);
         }
         return sb.toString();
     }
@@ -429,9 +434,9 @@ public abstract class EmailMessage implements Serializable {
     }
 
     /**
-     * return the all receivers , with <code>;( semicolon)</code> separator
+     * return the all receivers , with <code>,( comma)</code> separator
      *
-     * @return the receivers with semicolon
+     * @return the receivers with comma
      */
     public String getToStr() {
         return getListStr(to);
@@ -452,5 +457,16 @@ public abstract class EmailMessage implements Serializable {
     public void validate() {
         isTrue(getTo() != null && getTo().size() > 0, "收件人不能为空");
         isTrue(StringUtils.isNotBlank(subject), "邮件主题或标题不能为空");
+    }
+
+    @Override
+    public String toString() {
+        return "EmailMessage{" + "收件人：" + to +
+                ", 抄送：" + cc +
+                ", 密送：" + bcc +
+                ", 主题：'" + subject + '\'' +
+                ", 附件：" + emailAttachments +
+                ", 内容：'" + getContent() + "\'" +
+                '}';
     }
 }

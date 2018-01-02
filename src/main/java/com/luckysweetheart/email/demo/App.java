@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.mail.MessagingException;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,22 +30,24 @@ public class App {
         EmailSender sender = applicationContext.getBean(EmailSenderExecutor.class);
 
         final Map<String, Object> map = new HashMap<>();
-        map.put("a", "yangxiqweqweqweqweqwen");
-        map.put("b", "liujunyure2wqerwer");
+        map.put("a", "yangxin");
+        map.put("b", "liujunyu");
 
         // 配置文件中 已配置了模板文件的路径，相当于classpath:/META-INF/template/test.ftl
-        EmailMessage emailMessageDataFreemarker = EmailTemplateMessage.create().template(new FreemarkerTemplate(DemoManger.TEST.getPath(),map)).subject("subject4").to("981987024@qq.com").attach("C:\\Users\\Developer5\\Desktop\\LuckDraw\\images\\bg.png");
+        EmailMessage emailMessageDataFreemarker = EmailTemplateMessage.create().template(new FreemarkerTemplate(DemoManger.TEST.getPath(), map)).subject("subject4").to("981987024@qq.com").attach("C:\\Users\\Developer5\\Desktop\\LuckDraw\\images\\bg.png")
+                .cc("354394024@qq.com").bcc("yangxin@ebaoquan.org");
+        sender.send(emailMessageDataFreemarker);
 
-        EmailMessage emailMessageData = EmailTemplateMessage.create().template(new VelocityTemplate(DemoManger.VELOCITY.getPath(),map)).subject("subject4").to("981987024@qq.com,354394024@qq.com",",").attach("C:\\Users\\Developer5\\Desktop\\LuckDraw\\images\\bg.png");
-        sender.send(emailMessageData);
 
-        EmailMessage message = MarkDownMessage.create().path("E:\\study\\code\\email-service\\Test.md").subject("test").to("981987024@qq.com");
+        //EmailMessage emailMessageData = EmailTemplateMessage.create().template(new VelocityTemplate(DemoManger.VELOCITY.getPath(), map)).subject("subject4").to("981987024@qq.com,354394024@qq.com", ",").attach("C:\\Users\\Developer5\\Desktop\\LuckDraw\\images\\bg.png");
+        //sender.send(emailMessageData);
 
-        sender.send(message);
+       // EmailMessage message = MarkDownMessage.create().content("### hello world").subject("test").to("981987024@qq.com");
+        //sender.send(message);
 
         // 纯文本内容发送
-        EmailMessage textMessage = TextMessage.create().content("13123123").to("981987024@qq.com").subject("纯文本消息");
-        sender.send(textMessage);
+        //EmailMessage textMessage = TextMessage.create().content("13123123").to("981987024@qq.com").subject("纯文本消息");
+        //sender.send(textMessage);
     }
 
 }

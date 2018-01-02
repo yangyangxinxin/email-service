@@ -35,4 +35,9 @@ public class EmailTemplateMessage extends EmailMessage {
         return template.getParser().parse(template);
     }
 
+    @Override
+    public void validate() {
+        // 模板消息的验证条件
+        super.validate();
+    }
 }

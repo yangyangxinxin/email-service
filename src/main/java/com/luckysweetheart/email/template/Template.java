@@ -2,13 +2,14 @@ package com.luckysweetheart.email.template;
 
 import com.luckysweetheart.email.parser.parsers.TemplateParser;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * 模板
  * Created by yangxin on 2017/12/26.
  */
-public interface Template {
+public interface Template extends Serializable {
 
     /**
      * 模板路径

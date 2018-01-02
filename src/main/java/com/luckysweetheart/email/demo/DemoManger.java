@@ -1,11 +1,11 @@
 package com.luckysweetheart.email.demo;
 
-import com.luckysweetheart.email.template.TemplateManger;
+import com.luckysweetheart.email.template.TemplateManager;
 
 /**
  * Created by yangxin on 2017/12/29.
  */
-public enum DemoManger implements TemplateManger {
+public enum DemoManger implements TemplateManager {
 
     TEST("test.ftl", "TEST"),
     VELOCITY("/META-INF/template/test.vm", "AAA");

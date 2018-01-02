@@ -11,9 +11,9 @@ public interface TextParser extends Parser {
     /**
      * 解析文本
      *
-     * @param pathOrContent 待解析的文本路径或文本内容。视实现方法而定。
+     * @param content 待解析的文本内容。
      * @return 解析后的文本
      */
-    String parse(String pathOrContent);
+    String parse(String content);
 
 }

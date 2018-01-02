@@ -1,8 +1,11 @@
 package com.luckysweetheart.email.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import javax.mail.Authenticator;
+import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import java.util.Properties;
 
@@ -11,6 +14,8 @@ import java.util.Properties;
  * Created by yangxin on 2017/12/18.
  */
 public class EmailClient extends JavaMailSenderImpl {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 登录用户名,发件人
@@ -57,7 +62,7 @@ public class EmailClient extends JavaMailSenderImpl {
         super.setUsername(username);
         super.setPort(port);
 
-        Properties props = new Properties();//②
+        Properties props = new Properties();
         props.setProperty("mail.smtp.host", host);
         props.setProperty("mail.smtp.auth", "true");
         final String pwd = this.password;
@@ -68,6 +73,16 @@ public class EmailClient extends JavaMailSenderImpl {
                 return new PasswordAuthentication(name, pwd);
             }
         });
+        session.setDebug(debug);
+        if (debug) {
+            try {
+                logger.info("测试邮件连接");
+                testConnection();
+                logger.info("邮件连接正常");
+            } catch (MessagingException e) {
+                logger.error(e.getMessage(),e);
+            }
+        }
         super.setSession(session);
     }
 

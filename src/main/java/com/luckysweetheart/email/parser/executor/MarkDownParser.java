@@ -18,17 +18,12 @@ public class MarkDownParser implements TextParser {
     private PegDownProcessor processor = new PegDownProcessor(Extensions.ALL);
 
     @Override
-    public String parse(String path) {
+    public String parse(String content) {
         try {
-            String html = null;
-            List<String> strings = FileUtils.readLines(new File(path), "UTF-8");
-            StringBuilder sb = new StringBuilder();
-            for (String string : strings) {
-                sb.append(string).append("\n");
-            }
+            String html;
 
-            if (StringUtils.isNotBlank(sb.toString())) {
-                html = processor.markdownToHtml(sb.toString());
+            if (StringUtils.isNotBlank(content)) {
+                html = processor.markdownToHtml(content);
                 return html;
             }
             return null;
