@@ -4,6 +4,7 @@ import com.luckysweetheart.email.parser.executor.VelocityTemplateParser;
 import com.luckysweetheart.email.template.BaseTemplate;
 import com.luckysweetheart.email.template.Template;
 import com.luckysweetheart.email.parser.parsers.TemplateParser;
+import com.luckysweetheart.email.util.MapUtil;
 import com.luckysweetheart.email.util.SpringUtil;
 
 import java.util.Map;
@@ -14,7 +15,8 @@ import java.util.Map;
  */
 public class VelocityTemplate extends BaseTemplate {
 
-    public VelocityTemplate() {
+    public VelocityTemplate(String path, Object... params) {
+        this(path, MapUtil.strObj(params));
     }
 
     public VelocityTemplate(String path, Map<String, Object> parameters) {
