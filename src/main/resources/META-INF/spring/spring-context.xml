@@ -19,7 +19,7 @@
     </bean>
 
     <bean id="freemarkerTemplateParser" class="com.luckysweetheart.email.parser.executor.FreemarkerTemplateParser">
-        <property name="freeMarkerConfigurer" ref="freeMarker"/>
+        <constructor-arg name="freeMarkerConfigurer" ref="freeMarker"/>
     </bean>
 
     <bean class="com.luckysweetheart.email.sender.EmailSenderExecutor" id="emailSenderExecutor">

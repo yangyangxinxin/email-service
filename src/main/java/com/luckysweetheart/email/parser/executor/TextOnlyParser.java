@@ -10,7 +10,7 @@ public class TextOnlyParser implements TextParser {
 
     @Override
     public String parse(String content) {
-        return content ;
+        return content;
     }
 
 }

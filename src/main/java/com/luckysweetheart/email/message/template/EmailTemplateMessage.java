@@ -22,6 +22,10 @@ public class EmailTemplateMessage extends EmailMessage {
         return new EmailTemplateMessage();
     }
 
+    public static EmailTemplateMessage create(Template template){
+        return create().template(template);
+    }
+
     public EmailTemplateMessage template(Template template) {
         this.template = template;
         return this;

@@ -34,8 +34,14 @@ public class App {
         map.put("b", "liujunyu");
 
         // 配置文件中 已配置了模板文件的路径，相当于classpath:/META-INF/template/test.ftl
-        EmailMessage emailMessageDataFreemarker = EmailTemplateMessage.create().template(new FreemarkerTemplate(DemoManger.TEST.getPath(), map)).subject("subject4").to("981987024@qq.com").attach("C:\\Users\\Developer5\\Desktop\\LuckDraw\\images\\bg.png")
-                .cc("354394024@qq.com").bcc("yangxin@ebaoquan.org");
+        EmailMessage emailMessageDataFreemarker = EmailTemplateMessage
+                .create()
+                .template(new FreemarkerTemplate(DemoManger.TEST.getPath(), "a","yangxin","b","yangxin"))
+                .subject("subject4")
+                .to("981987024@qq.com")
+                .attach("C:\\Users\\Developer5\\Desktop\\LuckDraw\\images\\bg.png")
+                .cc("354394024@qq.com")
+                .bcc("yangxin@ebaoquan.org");
         sender.send(emailMessageDataFreemarker);
 
 

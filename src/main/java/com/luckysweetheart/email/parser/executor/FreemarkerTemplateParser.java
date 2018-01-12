@@ -1,8 +1,8 @@
 package com.luckysweetheart.email.parser.executor;
 
+import com.luckysweetheart.email.exception.ParseException;
 import com.luckysweetheart.email.parser.parsers.TemplateParser;
 import com.luckysweetheart.email.template.Template;
-import com.luckysweetheart.email.util.SpringUtil;
 import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +21,10 @@ public class FreemarkerTemplateParser implements TemplateParser {
 
     private FreeMarkerConfigurer freeMarkerConfigurer;
 
+    public FreemarkerTemplateParser(FreeMarkerConfigurer freeMarkerConfigurer){
+        this.freeMarkerConfigurer = freeMarkerConfigurer;
+    }
+
     @Override
     public String parse(Template template) {
         String html = null;
@@ -29,6 +33,7 @@ public class FreemarkerTemplateParser implements TemplateParser {
             html = FreeMarkerTemplateUtils.processTemplateIntoString(temp, template.getParameters());
         } catch (IOException | TemplateException e) {
             logger.error(e.getMessage(), e);
+            throw new ParseException(e.getMessage());
         }
         return html;
     }

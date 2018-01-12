@@ -1,10 +1,16 @@
 package com.luckysweetheart.email.message;
 
+import com.luckysweetheart.email.client.EmailClient;
+import com.luckysweetheart.email.exception.EmailMessageException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.mail.javamail.MimeMessageHelper;
 
 import javax.lang.model.element.NestingKind;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -468,5 +474,65 @@ public abstract class EmailMessage implements Serializable {
                 ", 附件：" + emailAttachments +
                 ", 内容：'" + getContent() + "\'" +
                 '}';
+    }
+
+    /**
+     * 构建MimeMessage
+     *
+     * @param emailClient
+     * @return
+     */
+    public MimeMessage buildMimeMessage(EmailClient emailClient) {
+        try {
+            MimeMessage message = emailClient.createMimeMessage();
+
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            // 附件
+            List<EmailAttachment> emailAttachments = getEmailAttachments();
+            if (emailAttachments != null && emailAttachments.size() > 0) {
+                for (EmailAttachment emailAttachment : emailAttachments) {
+                    helper.addAttachment(emailAttachment.getName(), emailAttachment.createDataSource());
+                }
+            }
+
+            // 发件人，从配置中取
+            helper.setFrom(emailClient.getUsername());
+
+            // 收件人
+            helper.setTo(getToArray());
+
+            // 抄送
+            String[] ccArray = getCcArray();
+            if (ccArray != null) {
+                helper.setCc(ccArray);
+            }
+
+            // 密送
+            String[] bccArray = getBccArray();
+            if (bccArray != null) {
+                helper.setBcc(bccArray);
+            }
+
+            // 主题
+            helper.setSubject(getSubject());
+
+            // 邮件内容
+            helper.setText(getContent(), true);
+            return message;
+        } catch (IOException | MessagingException e) {
+            e.printStackTrace();
+            throw new EmailMessageException(e.getMessage());
+        }
+    }
+
+    /**
+     * 直接发送邮件
+     *
+     * @param emailClient
+     */
+    public void send(EmailClient emailClient) {
+        validate();
+        emailClient.send(buildMimeMessage(emailClient));
     }
 }

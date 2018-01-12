@@ -1,19 +1,20 @@
 package com.luckysweetheart.email.parser.executor;
 
+import com.luckysweetheart.email.exception.ParseException;
 import com.luckysweetheart.email.parser.parsers.TextParser;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pegdown.Extensions;
 import org.pegdown.PegDownProcessor;
-
-import java.io.File;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * MarkDown 文本解析器
  * Created by yangxin on 2017/12/26.
  */
 public class MarkDownParser implements TextParser {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private PegDownProcessor processor = new PegDownProcessor(Extensions.ALL);
 
@@ -28,8 +29,8 @@ public class MarkDownParser implements TextParser {
             }
             return null;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new ParseException(e.getMessage());
         }
-        return null;
     }
 }

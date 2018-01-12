@@ -1,5 +1,6 @@
 package com.luckysweetheart.email.template;
 
+import com.luckysweetheart.email.parser.parsers.TemplateParser;
 import com.luckysweetheart.email.template.freemarker.FreemarkerTemplate;
 import com.luckysweetheart.email.template.velocity.VelocityTemplate;
 
@@ -39,4 +40,5 @@ public abstract class BaseTemplate implements Template {
     public void setParameters(Map<String, Object> parameters) {
         this.parameters = parameters;
     }
+
 }
