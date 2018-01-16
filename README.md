@@ -1,4 +1,4 @@
-# email-service
+# email-sender
 --- 
 > 封装java发送邮件，简化开发流程。支持freemarker、velocity、markdown，支持附件。可以自己定义邮件模板类型。只需要实现`com.luckysweetheart.email.template.Template`接口，你需要做的就是实现你的模板解析方法。
 
